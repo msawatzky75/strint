@@ -1,8 +1,8 @@
 {
-  "name": "StrInt",
+  "name": "strint",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:msawatzky75/StrInt.git",
+  "repository": "git@github.com:msawatzky75/strint.git",
   "author": "Matthew Sawatzky <34319870+msawatzky75@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {

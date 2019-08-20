@@ -28,17 +28,15 @@ export default class StrInt implements IComparable<Target> {
 	}
 
 	// Insert {value} at {this.value.length - (1 + digit)}
+	// digit is an index, starting at the one's position of the number
 	private setDigit(digit: number, value: string | number) {
-		if (value.toString().length > 1) {
-			throw new Error('Replacement value too long');
-		}
-
 		const index = this.value.length - (1 + digit);
 		const rep = value.toString();
-		if (digit === this.value.length) {
-			this.value = rep + this.value;
+		if (digit === this.value.length - 1 && rep.length > 1) {
+			console.log('set in front', rep, digit == this.value.length - 1 ? 'front' : 'not front', rep + this.value.substring(1));
+			this.value = rep + this.value.substring(1);
 		} else {
-			this.value = this.value.substring(0, index) + rep + this.value.substring(index + rep.length);
+			this.value = this.value.substring(0, index) + (Number(rep) % 10).toString() + this.value.substring(index + 1);
 		}
 	}
 
@@ -72,11 +70,13 @@ export default class StrInt implements IComparable<Target> {
 			if (result.toString() === this.getDigit(i))
 				continue;
 
-			this.setDigit(i, result % 10);
+			let thisLength = this.value.length;
+			this.setDigit(i, result);
 
 			// if there is carryover, add it.
-			if (result > 9)
+			if (result > 9 && this.value.length === thisLength) {
 				this.add(new StrInt(result - (result % 10)).negate(!other.positive));
+			}
 		}
 
 		return this;
@@ -113,6 +113,20 @@ export default class StrInt implements IComparable<Target> {
 		}
 
 		return this;
+	}
+
+	multiply(target: Target): StrInt {
+		const other = new StrInt(target);
+		const product = new StrInt();
+
+		for (let i = 0; i < this.value.length; i++) {
+			let itrSum = new StrInt();
+			for (let j = 0; j < other.value.length; j++) {
+				itrSum.add(Number(this.getDigit(i)) * Number(other.getDigit(j)) * Math.pow(10, j));
+			}
+			product.add(itrSum);
+		}
+		return product;
 	}
 
 	compareTo(target: Target): Comparison {

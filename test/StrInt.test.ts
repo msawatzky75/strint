@@ -112,3 +112,16 @@ test('compare smaller negative to bigger negative', () => {
 test('compare equal length negative', () => {
 	expect(new StrInt(-502).compareTo(-706)).toBe(Comparison.greater);
 });
+
+test('multiply single digit by single digit', () => {
+	expect(new StrInt(4).multiply(4).toString()).toBe("16");
+});
+test('multiply single digit by multi-digit', () => {
+	expect(new StrInt(4).multiply(40).toString()).toBe("160");
+});
+test('multiply multi-digit by single digit ', () => {
+	expect(new StrInt(40).multiply(4).toString()).toBe("160");
+});
+test('multiply multi-digit by multi-digit', () => {
+	expect(new StrInt(25).multiply(25).toString()).toBe("625");
+});

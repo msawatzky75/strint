@@ -10,20 +10,20 @@ test('constructor negative number', () => {
 	expect(new StrInt(-7).toString()).toBe("-7");
 });
 test('constructor invalid type', () => {
-	expect(() => new StrInt([7])).toThrow()
+	expect(() => new StrInt([7])).toThrow();
 });
 
 test('negate default positive', () => {
-	expect(new StrInt(5).negate().toString()).toBe("-5")
+	expect(new StrInt(5).negate().toString()).toBe("-5");
 });
 test('negate default negative', () => {
-	expect(new StrInt(-5).negate().toString()).toBe("5")
+	expect(new StrInt(-5).negate().toString()).toBe("5");
 });
 test('negate provided positive', () => {
-	expect(new StrInt(5).negate(true).toString()).toBe("-5")
+	expect(new StrInt(5).negate(true).toString()).toBe("-5");
 });
 test('negate provided negative', () => {
-	expect(new StrInt(-5).negate(false).toString()).toBe("5")
+	expect(new StrInt(-5).negate(true).toString()).toBe("-5");
 });
 
 test('simple sum', () => {
@@ -124,4 +124,13 @@ test('multiply multi-digit by single digit ', () => {
 });
 test('multiply multi-digit by multi-digit', () => {
 	expect(new StrInt(25).multiply(25).toString()).toBe("625");
+});
+test('multiply positive by negative', () => {
+	expect(new StrInt(4).multiply(-4).toString()).toBe("-16");
+});
+test('multiply negative by positive', () => {
+	expect(new StrInt(-4).multiply(4).toString()).toBe("-16");
+});
+test('multiply negative by negative', () => {
+	expect(new StrInt(-4).multiply(-4).toString()).toBe("16");
 });

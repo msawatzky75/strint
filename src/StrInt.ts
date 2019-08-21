@@ -124,9 +124,9 @@ export default class StrInt implements IComparable<Target> {
 			for (let j = 0; j < other.value.length; j++) {
 				itrSum.add(Number(this.getDigit(i)) * Number(other.getDigit(j)) * Math.pow(10, j));
 			}
-			product.add(itrSum);
+			product.add(itrSum.value + Math.pow(10, i).toString().substring(1));
 		}
-		return product;
+		return product.negate(!this.positive && other.positive || this.positive && !other.positive);
 	}
 
 	compareTo(target: Target): Comparison {

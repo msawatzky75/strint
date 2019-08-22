@@ -36,7 +36,7 @@ test('overflow sum', () => {
 	expect(new StrInt(48).add(3).toString()).toBe("51");
 });
 test('negative sum', () => {
-	expect(new StrInt(65).negate().add(5).toString()).toBe("-60");
+	expect(new StrInt(-65).add(5).toString()).toBe("-60");
 });
 test('add zero', () => { // coverage test
 	expect(new StrInt(845).add(0).toString()).toBe("845");
@@ -47,6 +47,10 @@ test('sum past zero', () => {
 test('sum multi-digit past zero', () => {
 	expect(new StrInt(-42).add(53).toString()).toBe("11");
 });
+test('add large number to large number', () => {
+	expect(new StrInt(992).add(99).toString()).toBe("1091");
+});
+
 
 test('simple subtract', () => {
 	expect(new StrInt(9).subtract(3).toString()).toBe("6");
@@ -58,7 +62,7 @@ test('overflow subtract', () => {
 	expect(new StrInt(21).subtract(3).toString()).toBe("18");
 });
 test('negative subtract', () => {
-	expect(new StrInt(48).negate().subtract(3).toString()).toBe("-51");
+	expect(new StrInt(-48).subtract(3).toString()).toBe("-51");
 });
 test('subtract zero', () => { // coverage test
 	expect(new StrInt(845).subtract(0).toString()).toBe("845");
@@ -68,6 +72,9 @@ test('subtract past zero', () => {
 });
 test('subtract multi-digit past zero', () => {
 	expect(new StrInt(40).subtract(53).toString()).toBe("-13");
+});
+test('subtract large number from large number', () => {
+	expect(new StrInt(996).subtract(99).toString()).toBe("897");
 });
 
 test('compare larger', () => {
@@ -124,6 +131,9 @@ test('multiply multi-digit by single digit ', () => {
 });
 test('multiply multi-digit by multi-digit', () => {
 	expect(new StrInt(25).multiply(25).toString()).toBe("625");
+});
+test('multiply large number by large number', () => {
+	expect(new StrInt(99).multiply(99).toString()).toBe("9801");
 });
 test('multiply positive by negative', () => {
 	expect(new StrInt(4).multiply(-4).toString()).toBe("-16");

@@ -3,6 +3,10 @@ export default class StrInt implements IComparable<Target> {
 	value: string;
 	positive: boolean;
 
+	static abs(val: StrInt): StrInt {
+		return new StrInt(val).negate(false);
+	}
+
 	constructor(num?: any) {
 		this.value = "0";
 		this.positive = true;
@@ -27,7 +31,6 @@ export default class StrInt implements IComparable<Target> {
 		return this.value.charAt(this.value.length - (1 + digit));
 	}
 
-	// Insert {value} at {this.value.length - (1 + digit)}
 	// digit is an index, starting at the one's position of the number
 	private setDigit(digit: number, value: string | number) {
 		const index = this.value.length - (1 + digit);
@@ -40,6 +43,7 @@ export default class StrInt implements IComparable<Target> {
 		}
 	}
 
+	// Insert {value} at {this.value.length - (1 + digit)}
 	negate(negative?: boolean): StrInt {
 		if (negative !== undefined) {
 			this.positive = !negative;
@@ -47,10 +51,6 @@ export default class StrInt implements IComparable<Target> {
 			this.positive = !this.positive;
 		}
 		return this;
-	}
-
-	abs(): StrInt {
-		return new StrInt(this.value);
 	}
 
 	add(target: Target): StrInt {
@@ -61,7 +61,7 @@ export default class StrInt implements IComparable<Target> {
 			return this;
 		}
 
-		if (other.positive !== this.positive) {
+		if (this.positive !== other.positive) {
 			return this.subtract(other.negate());
 		}
 
@@ -70,12 +70,10 @@ export default class StrInt implements IComparable<Target> {
 			if (result.toString() === this.getDigit(i))
 				continue;
 
-			let thisLength = this.value.length;
-			this.setDigit(i, result);
-
-			// if there is carryover, add it.
-			if (result > 9 && this.value.length === thisLength) {
-				this.add(new StrInt(result - (result % 10)).negate(!other.positive));
+			this.setDigit(i, result % 10);
+			this.negate(!other.positive);
+			if (result > 9) {
+				this.add(new StrInt("1".padEnd(i + 2, "0")).negate(!other.positive));
 			}
 		}
 
@@ -89,8 +87,17 @@ export default class StrInt implements IComparable<Target> {
 			return this;
 		}
 
-		if (other.positive !== this.positive) {
+		if (this.positive !== other.positive) {
 			return this.add(other.negate());
+		}
+
+		// swap values if the other is bigger
+		if (StrInt.abs(this).lt(StrInt.abs(other))) {
+			let temp = this.value;
+			this.value = other.value;
+			other.value = temp;
+			this.negate();
+			other.negate();
 		}
 
 		for (let i = 0; i < other.value.length; i++) {
@@ -98,17 +105,11 @@ export default class StrInt implements IComparable<Target> {
 			if (result.toString() === this.getDigit(i))
 				continue;
 
-			if (this.abs().lt(other.abs())) {
-				this.negate();
-				let temp = this.value;
-				this.value = other.value;
-				other.value = temp;
-				this.setDigit(i, Math.abs(result));
+			if (result < 0) {
+				this.setDigit(i, 10 + result);
+				this.subtract("1".padEnd(i + 2, "0")).negate(!other.positive);
 			} else {
-				this.setDigit(i, result < 0 ? 10 + result : result);
-				if (result < 0) {
-					this.subtract(new StrInt(Math.pow(10, other.value.length - i)).negate(!other.positive));
-				}
+				this.setDigit(i, result);
 			}
 		}
 
@@ -124,7 +125,8 @@ export default class StrInt implements IComparable<Target> {
 			for (let j = 0; j < other.value.length; j++) {
 				itrSum.add(Number(this.getDigit(i)) * Number(other.getDigit(j)) * Math.pow(10, j));
 			}
-			product.add(itrSum.value + Math.pow(10, i).toString().substring(1));
+			itrSum = new StrInt(itrSum.value + Math.pow(10, i).toString().substring(1));
+			product.add(itrSum);
 		}
 		return product.negate(!this.positive && other.positive || this.positive && !other.positive);
 	}
@@ -178,6 +180,13 @@ export default class StrInt implements IComparable<Target> {
 
 	equals(target: Target): boolean {
 		return this.compareTo(target) === Comparison.equal;
+	}
+
+	toJSON(): object {
+		return {
+			value: this.value,
+			positive: this.positive,
+		};
 	}
 
 	toString(): string {

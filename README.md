@@ -1,5 +1,7 @@
+Note: This library is incomplete and development has stopped after i found bigint :P
+
 # StrInt
-A string encoded Integer class that can handle numbers bigger than 53 bits.
+A string encoded Integer class that can handle numbers bigger than 53 bits. This was meant as brain food, and not to be used in any production code.
 
 #### Constructor
 | Parameters | Types |
